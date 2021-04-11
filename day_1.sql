@@ -175,5 +175,6 @@ update author set last_name_id = (
     select id from last_name where last_name = author.surname
 );
 
+-- 5. dodanie constraint
 alter table `user` add constraint user_fisrt_name_id_fk
 foreign key (first_name_id) references first_name(id) on update CASCADE on DELETE RESTRICT;
