@@ -176,5 +176,21 @@ update author set last_name_id = (
 );
 
 -- 5. dodanie constraint
-alter table `user` add constraint user_fisrt_name_id_fk
+alter table `user` add constraint user_first_name_id_fk
 foreign key (first_name_id) references first_name(id) on update CASCADE on DELETE RESTRICT;
+
+alter table `user` add constraint user_last_name_id_fk
+foreign key (last_name_id) references last_name(id) on update CASCADE on DELETE RESTRICT;
+
+alter table `author` add constraint author_first_name_id_fk
+foreign key (first_name_id) references first_name(id) on update CASCADE on DELETE RESTRICT;
+
+alter table `author` add constraint author_last_name_id_fk
+foreign key (last_name_id) references last_name(id) on update CASCADE on DELETE RESTRICT;
+
+-- 6 usuwamy zbędne pola z user i author
+alter table `user` drop column name;
+alter table `user` drop column surname;
+alter table `author` drop column name;
+alter table `author` drop column surname;
+
