@@ -1,4 +1,4 @@
-create table book
+create table if not exists book
 (
     book_id           int auto_increment,
     book_title        varchar(250) not null,
@@ -59,17 +59,57 @@ from book
 where book_title like 'Rose%';
 
 insert into book_author (ba_book_id, ba_author_id)
-values (
-        (select book_id from book where book_title like 'Rose%'),
-        (select id from author where author.surname like 'King')
-);
+values ((select book_id from book where book_title like 'Rose%'),
+        (select id from author where author.surname like 'King'));
 
 select *
 from book
-inner join book_author on book.book_id = book_author.ba_book_id
-inner join author as a on book_author.ba_author_id = a.id;
+         right join book_author on book.book_id = book_author.ba_book_id
+         right join author as a on book_author.ba_author_id = a.id;
 
 select *
 from author
-inner join book_author ba on author.id = ba.ba_author_id
-inner join book b on b.book_id = ba.ba_book_id
+         inner join book_author ba on author.id = ba.ba_author_id
+         inner join book b on b.book_id = ba.ba_book_id;
+
+create table book_status
+(
+    id   int auto_increment primary key,
+    name varchar(20) not null unique
+);
+
+drop table if exists book_statu;
+
+insert into book_status(name)
+values ('Dostępna'),
+       ('Wypożyczona');
+
+create table book_copy
+(
+    id        int auto_increment,
+    book_id   int not null,
+    status_id int not null default (1),
+
+    primary key (id),
+    foreign key (book_id) references book (book_id) on update cascade on delete restrict,
+    foreign key (status_id) references book_status (id) on update cascade on delete restrict
+);
+
+create table user_book_rent
+(
+    id          int auto_increment,
+    bc_id       int  not null,
+    user_id     int  not null,
+    rented_on   date not null default (now()),
+    returned_on date null,
+
+    primary key (id),
+    foreign key (bc_id) references book_copy (id) on update cascade on delete restrict,
+    foreign key (user_id) references `user` (id) on update cascade on delete restrict
+);
+
+update book
+set book_pages        = 366,
+    book_publish_year = 2000
+where book_title like 'Rose%other';
+
