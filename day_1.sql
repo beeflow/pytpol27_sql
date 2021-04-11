@@ -194,3 +194,9 @@ alter table `user` drop column surname;
 alter table `author` drop column name;
 alter table `author` drop column surname;
 
+-- -----------
+
+select user.id, first_name, last_name, email, phone, card_number
+from `user`
+inner join first_name on user.first_name_id = first_name.id
+inner join last_name on user.last_name_id = last_name.id;
