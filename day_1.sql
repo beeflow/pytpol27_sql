@@ -119,9 +119,15 @@ set book_pages        = 366,
     book_publish_year = 2000
 where book_title like 'Rose%other';
 
-update `user` set card_number = '74y8375' where id = 1;
-update `user` set card_number = '74y8373' where id = 2;
-update `user` set card_number = '74y8376' where id = 3;
+update `user`
+set card_number = '74y8375'
+where id = 1;
+update `user`
+set card_number = '74y8373'
+where id = 2;
+update `user`
+set card_number = '74y8376'
+where id = 3;
 
 insert into book_status(name)
 values ('Inna jakaś');
@@ -130,76 +136,106 @@ values ('Inna jakaś');
 delete from book_status where id = 5;
 */
 
-create table first_name (
-    id int not null auto_increment primary key,
+create table first_name
+(
+    id         int not null auto_increment primary key,
     first_name varchar(15)
 );
-create table last_name (
-    id int not null auto_increment primary key,
+create table last_name
+(
+    id        int not null auto_increment primary key,
     last_name varchar(50)
 );
 
-alter table `user` modify column first_name_id int null;
-alter table `user` add column last_name_id int null;
+alter table `user`
+    modify column first_name_id int null;
+alter table `user`
+    add column last_name_id int null;
 
-alter table author add column first_name_id int null;
-alter table author add column last_name_id int null;
+alter table author
+    add column first_name_id int null;
+alter table author
+    add column last_name_id int null;
 
 -- 1. Kopia imion a user i author do first_name
 insert into first_name(first_name)
-select name from `user`
+select name
+from `user`
 union
-select name from author;
+select name
+from author;
 
 -- 2. Kopia nazwisko z user i author do last_name
 insert into last_name(last_name)
-select surname from `user`
+select surname
+from `user`
 union
-select surname from author;
+select surname
+from author;
 
 -- 3. aktualizacja tabeli user i author o ID imienia
-update `user` set first_name_id = (
-    select id from first_name where first_name = user.name
+update `user`
+set first_name_id = (
+    select id
+    from first_name
+    where first_name = user.name
 );
 
-update author set first_name_id = (
-    select id from first_name where first_name = author.name
+update author
+set first_name_id = (
+    select id
+    from first_name
+    where first_name = author.name
 );
 
 -- 4. aktualizacja tabeli user i author o ID nazwiska
-update `user` set last_name_id = (
-    select id from last_name where last_name = user.surname
+update `user`
+set last_name_id = (
+    select id
+    from last_name
+    where last_name = user.surname
 );
 
-update author set last_name_id = (
-    select id from last_name where last_name = author.surname
+update author
+set last_name_id = (
+    select id
+    from last_name
+    where last_name = author.surname
 );
 
 -- 5. dodanie constraint
-alter table `user` add constraint user_first_name_id_fk
-foreign key (first_name_id) references first_name(id) on update CASCADE on DELETE RESTRICT;
+alter table `user`
+    add constraint user_first_name_id_fk
+        foreign key (first_name_id) references first_name (id) on update CASCADE on DELETE RESTRICT;
 
-alter table `user` add constraint user_last_name_id_fk
-foreign key (last_name_id) references last_name(id) on update CASCADE on DELETE RESTRICT;
+alter table `user`
+    add constraint user_last_name_id_fk
+        foreign key (last_name_id) references last_name (id) on update CASCADE on DELETE RESTRICT;
 
-alter table `author` add constraint author_first_name_id_fk
-foreign key (first_name_id) references first_name(id) on update CASCADE on DELETE RESTRICT;
+alter table `author`
+    add constraint author_first_name_id_fk
+        foreign key (first_name_id) references first_name (id) on update CASCADE on DELETE RESTRICT;
 
-alter table `author` add constraint author_last_name_id_fk
-foreign key (last_name_id) references last_name(id) on update CASCADE on DELETE RESTRICT;
+alter table `author`
+    add constraint author_last_name_id_fk
+        foreign key (last_name_id) references last_name (id) on update CASCADE on DELETE RESTRICT;
 
 -- 6 usuwamy zbędne pola z user i author
-alter table `user` drop column name;
-alter table `user` drop column surname;
-alter table `author` drop column name;
-alter table `author` drop column surname;
+alter table `user`
+    drop column name;
+alter table `user`
+    drop column surname;
+alter table `author`
+    drop column name;
+alter table `author`
+    drop column surname;
 
 -- -----------
 
 select user.id, first_name, last_name, email, phone, card_number
 from `user`
-inner join first_name on user.first_name_id = first_name.id
-inner join last_name on user.last_name_id = last_name.id;
+         inner join first_name on user.first_name_id = first_name.id
+         inner join last_name on user.last_name_id = last_name.id;
 
 -- !!! Nie da się stworzyć funkcji tak od razu :P
 -- 1. zaloguj się z konsoli (terminala ww Pycharm) do obrazu dockerowego bazy danych:
@@ -215,8 +251,31 @@ inner join last_name on user.last_name_id = last_name.id;
 create function f_add_first_name(firstName varchar(15)) returns int
 begin
     if (select id from first_name where lower(first_name) = lower(firstName)) is null then
-        insert into first_name(first_name) values(firstName);
+        insert into first_name(first_name) values (firstName);
     end if;
 
     return (select id from first_name where lower(first_name) = lower(firstName));
 end;
+
+
+select f_add_first_name('Konstanty');
+
+
+create function f_add_last_name(lastName varchar(15)) returns int
+begin
+    if (select id from last_name where lower(last_name) = lower(lastName)) is null then
+        insert into last_name(last_name) values (lastName);
+    end if;
+
+    return (select id from last_name where lower(last_name) = lower(lastName));
+end;
+
+
+insert into author(first_name_id, last_name_id)
+values (f_add_first_name('Konstanty'), f_add_last_name('Radziwił'));
+
+
+select author.id, first_name, last_name
+from `author`
+         inner join first_name on author.first_name_id = first_name.id
+         inner join last_name on author.last_name_id = last_name.id;
