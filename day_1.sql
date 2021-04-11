@@ -113,3 +113,6 @@ set book_pages        = 366,
     book_publish_year = 2000
 where book_title like 'Rose%other';
 
+update `user` set card_number = '74y8375' where id = 1;
+update `user` set card_number = '74y8373' where id = 2;
+update `user` set card_number = '74y8376' where id = 3;
