@@ -44,6 +44,9 @@ values ('Tomasz', 'Zasada', 'tomasz.zasada@wp.pl');
 insert into `user` (name, surname, email)
 values ('Olga', 'Czytelna', 'czytelna.o@onet.pl');
 
+insert into `user` (name, surname, email)
+values ('Rafał', 'Olbromski', 'rafal.o@beeflow.co.uk');
+
 
 INSERT INTO book(book_title, book_isbn)
 VALUES ('Wyznawcy płomienia', '1-11111'),
@@ -53,6 +56,9 @@ VALUES ('Wyznawcy płomienia', '1-11111'),
 INSERT INTO author(name, surname)
 VALUES ('Stephen', 'King'),
        ('J.R.R.', 'Tolkien');
+
+INSERT INTO author(name, surname)
+VALUES ('Rafał', 'Przetakowski');
 
 select book_id
 from book
@@ -116,3 +122,58 @@ where book_title like 'Rose%other';
 update `user` set card_number = '74y8375' where id = 1;
 update `user` set card_number = '74y8373' where id = 2;
 update `user` set card_number = '74y8376' where id = 3;
+
+insert into book_status(name)
+values ('Inna jakaś');
+
+/*
+delete from book_status where id = 5;
+*/
+
+create table first_name (
+    id int not null auto_increment primary key,
+    first_name varchar(15)
+);
+create table last_name (
+    id int not null auto_increment primary key,
+    last_name varchar(50)
+);
+
+alter table `user` modify column first_name_id int null;
+alter table `user` add column last_name_id int null;
+
+alter table author add column first_name_id int null;
+alter table author add column last_name_id int null;
+
+-- 1. Kopia imion a user i author do first_name
+insert into first_name(first_name)
+select name from `user`
+union
+select name from author;
+
+-- 2. Kopia nazwisko z user i author do last_name
+insert into last_name(last_name)
+select surname from `user`
+union
+select surname from author;
+
+-- 3. aktualizacja tabeli user i author o ID imienia
+update `user` set first_name_id = (
+    select id from first_name where first_name = user.name
+);
+
+update author set first_name_id = (
+    select id from first_name where first_name = author.name
+);
+
+-- 4. aktualizacja tabeli user i author o ID nazwiska
+update `user` set last_name_id = (
+    select id from last_name where last_name = user.surname
+);
+
+update author set last_name_id = (
+    select id from last_name where last_name = author.surname
+);
+
+alter table `user` add constraint user_fisrt_name_id_fk
+foreign key (first_name_id) references first_name(id) on update CASCADE on DELETE RESTRICT;
