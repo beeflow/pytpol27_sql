@@ -200,3 +200,23 @@ select user.id, first_name, last_name, email, phone, card_number
 from `user`
 inner join first_name on user.first_name_id = first_name.id
 inner join last_name on user.last_name_id = last_name.id;
+
+-- !!! Nie da się stworzyć funkcji tak od razu :P
+-- 1. zaloguj się z konsoli (terminala ww Pycharm) do obrazu dockerowego bazy danych:
+-- docker-compose exec db /bin/bash
+-- w obrazie dockerowym wpisujemy polecenie:
+-- mysql -p
+-- i wprowadzamy hasło użytkownika root, które mamy w pliku docker-compose.yml
+-- potem wprowadzamy:
+-- set global log_bin_trust_function_creators = 1;
+-- wychodzimy poprzez ctrl + d (x2)
+-- dopiero wtedy można stworzyć funkcję
+
+create function f_add_first_name(firstName varchar(15)) returns int
+begin
+    if (select id from first_name where lower(first_name) = lower(firstName)) is null then
+        insert into first_name(first_name) values(firstName);
+    end if;
+
+    return (select id from first_name where lower(first_name) = lower(firstName));
+end;
