@@ -148,7 +148,7 @@ create table last_name
 );
 
 alter table `user`
-    modify column first_name_id int null;
+    add column first_name_id int null;
 alter table `user`
     add column last_name_id int null;
 
