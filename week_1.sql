@@ -101,6 +101,7 @@ create table book_copy
     foreign key (status_id) references book_status (id) on update cascade on delete restrict
 );
 
+insert into book_copy (book_id) values (1), (2), (3);
 create table user_book_rent
 (
     id          int auto_increment,
