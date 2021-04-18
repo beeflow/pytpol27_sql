@@ -60,7 +60,7 @@ values (3, 1);
 update user_book_rent set returned_on = cast(now() as date) where id = 1;
 
 -- trigger, który po dodaniu daty zwrotu książki, zmieni jej status
-drop trigger trg_rent_book_change_status_update;
+drop trigger if exists trg_rent_book_change_status_update;
 create trigger trg_rent_book_change_status_update after update on user_book_rent for each row
 begin
     -- nie pozwól podmienić książki na już wypożyczoną

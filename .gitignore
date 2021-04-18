@@ -1,3 +1,5 @@
 .idea
 my-db
 mytap
+.env
+environments/.env
