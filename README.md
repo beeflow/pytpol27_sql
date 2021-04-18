@@ -2,7 +2,7 @@
 
 ## Instalacja narzędzia do testów
 
-Do testów używamy [MyTAP](https://hepabolu.github.io/mytap/), który należy pobraćdo katalogu `mytap`.
+Do testów używamy [MyTAP](https://hepabolu.github.io/mytap/), który należy pobrać do katalogu `mytap`.
 
 Po uruchomieniu dockera wydajemy w terminalu polecenie:
 
