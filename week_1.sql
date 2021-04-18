@@ -258,8 +258,7 @@ begin
     return (select id from first_name where lower(first_name) = lower(firstName));
 end;
 
-
-select f_add_first_name('Konstanty');
+select f_add_first_name('Konstanty') as first_name;
 
 
 create function f_add_last_name(lastName varchar(15)) returns int
