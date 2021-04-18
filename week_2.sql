@@ -8,8 +8,7 @@ from book
          left join book_author ba on book.book_id = ba.ba_book_id
          left join author a on a.id = ba.ba_author_id;
 
-select *
-from v_book_author;
+select * from v_book_author;
 
 -- 1. usunąć widok
 drop view v_book_author;
