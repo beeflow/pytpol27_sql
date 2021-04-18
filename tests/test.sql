@@ -1,8 +1,22 @@
 -- Start a transaction.
 BEGIN;
 
+-- drop database if exists test;
+-- create database test;
+-- use test;
+--
+-- create table `user`
+-- (
+--     id          int auto_increment primary key,
+--     name        varchar(15)  not null,
+--     surname     varchar(50)  not null,
+--     email       varchar(100) null,
+--     phone       varchar(12),
+--     card_number varchar(9)
+-- );
+
 -- Plan how many tests you want to run.
-SELECT tap.plan(90);
+SELECT tap.plan(9);
 
 -- Run the tests.
 SELECT tap.pass('My test passed, w00t!');
@@ -48,4 +62,7 @@ select tap.eq(
            );
 
 CALL tap.finish();
+
+drop database if exists test;
+
 ROLLBACK;
